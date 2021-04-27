@@ -8,11 +8,17 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt install -y mesa-utils && apt cl
 
 RUN export DEBIAN_FRONTEND=noninteractive && apt install -y libnvidia-gl-460:i386 && apt clean
 
-RUN export DEBIAN_FRONTEND=noninteractive && apt install -y less nano && apt clean
+RUN export DEBIAN_FRONTEND=noninteractive && apt install -y less nano pulseaudio-utils && apt clean
+
+RUN export DEBIAN_FRONTEND=noninteractive && apt install -y libasound2 alsa-utils && apt clean
 
 
 RUN useradd --create-home --shell /bin/bash gamer && adduser gamer sudo && echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-USER gamer
+RUN adduser gamer audio
 
+COPY pulse-client.conf /etc/pulse/client.conf
+
+USER gamer
+WORKDIR /home/gamer/
 CMD /bin/bash
